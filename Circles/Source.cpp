@@ -37,10 +37,10 @@ private:
 	Player player;
 	int elements = 0;
 	Circle circles[41];
-	bool LeftKeyDown;
-	bool RightKeyDown;
-	bool UpKeyDown;
-	bool DownKeyDown;
+	bool LeftKeyDown = false;
+	bool RightKeyDown = false;
+	bool UpKeyDown = false;
+	bool DownKeyDown = false;
 	bool gameOver = false;
 
 public:
@@ -124,9 +124,9 @@ LRESULT MainWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			if (circles[i].x - circles[i].radius - 1 > windowWidth) {
 				circles[i].radius = (rand() % 50) + 2;
 				circles[i].x = -(rand() % 1000) - 51;
-				circles[elements].y = (rand() % windowHeight) - 30;
+				circles[i].y = (rand() % windowHeight) - 30;
 				circles[i].speed = ((float)(rand() % 200)) / 100 + 1;
-				circles[elements].color = D2D1::ColorF(((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255);
+				circles[i].color = D2D1::ColorF(((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255);
 			}
 		}
 
@@ -137,23 +137,22 @@ LRESULT MainWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			player.vx += 0.125;
 		}
 		if (UpKeyDown) {
-			player.vy -= 0.0625;
+			player.vy -= 0.125;
 		}
 		if (DownKeyDown) {
-			player.vy += 0.0625;
+			player.vy += 0.125;
 		}
 
 		if (player.x + player.vx + 17 > windowWidth || player.x + player.vx < 0) { //Bounces the player off an edge.
 			player.vx *= -0.5;
 		} else {
 			player.x += player.vx;
-		};
+		}
 		if (player.y + player.vy + 40 > windowHeight || player.y + player.vy < 0) {
 			player.vy *= -0.5;
 		} else {
 			player.y += player.vy;
-		};
-		player.y += player.vy;
+		}
 
 		for (int i = 0; i < elements; i++) {
 			double distanceToCircle = pow(pow(abs(player.x - circles[i].x), 2) + pow(abs(player.y - circles[i].y), 2), 0.5);
@@ -162,9 +161,9 @@ LRESULT MainWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					player.radius += 1;
 					circles[i].radius = (rand() % 50) + 2;
 					circles[i].x = -(rand() % 1000) - 51;
-					circles[elements].y = (rand() % windowHeight) - 30;
+					circles[i].y = (rand() % windowHeight) - 30;
 					circles[i].speed = ((float)(rand() % 200)) / 100 + 1;
-					circles[elements].color = D2D1::ColorF(((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255);
+					circles[i].color = D2D1::ColorF(((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255, ((float)(rand() % 255)) / 255);
 					if (player.radius >= 1000) {
 						gameOver = true;
 					}
@@ -226,9 +225,8 @@ LRESULT MainWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		player.radius = 10;
 		player.vx = 0;
 		player.vy = 0;
-		LeftKeyDown, RightKeyDown, UpKeyDown, DownKeyDown = false;
 
-		SetTimer(m_hwnd, 101, 1000/120, NULL);
+		SetTimer(m_hwnd, 101, 15, NULL);
 		return 0;
 	}
 
